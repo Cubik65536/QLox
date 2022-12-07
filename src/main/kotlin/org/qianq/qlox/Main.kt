@@ -4,7 +4,6 @@ import org.qianq.qlox.token.Token
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.Scanner
 import kotlin.system.exitProcess
 
 class QLox {
@@ -18,9 +17,9 @@ class QLox {
 
         private fun report(line: Int, where: String, message: String) {
             // Print error message
-            System.err.println("[line $line] Error $where: $message");
+            System.err.println("[line $line] Error $where: $message")
             // Set hadError to true
-            hadError = true;
+            hadError = true
         }
 
         private fun run(src: String) {

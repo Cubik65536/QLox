@@ -8,6 +8,20 @@ import kotlin.system.exitProcess
 
 class QLox {
     companion object {
+        // If a known error have been found
+        var hadError: Boolean = false
+
+        fun error(line: Int, message: String) {
+            report(line, "", message)
+        }
+
+        private fun report(line: Int, where: String, message: String) {
+            // Print error message
+            System.err.println("[line $line] Error $where: $message");
+            // Set hadError to true
+            hadError = true;
+        }
+
         private fun run(src: String) {
             // Run the instruction
             val scanner = Scanner(src)
@@ -24,6 +38,8 @@ class QLox {
                 val line = readlnOrNull() ?: break
                 // Execute the instruction
                 run(line)
+                // Don't kill the entire session if user made a mistake
+                hadError = false
             }
         }
 
@@ -32,6 +48,8 @@ class QLox {
             val bytes = Files.readAllBytes(Paths.get(path))
             // Execute the instructions
             run(String(bytes, StandardCharsets.UTF_8))
+            // Found and error and exit
+            if (hadError) exitProcess(65)
         }
 
         @JvmStatic

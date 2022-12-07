@@ -35,7 +35,7 @@ class Scanner (val src: String) {
             '+' -> addToken(TokenType.PLUS)
             ';' -> addToken(TokenType.SEMICOLON)
             '*' -> addToken(TokenType.STAR)
-            else -> QLox.error(line, "Unexpected character.")
+            else -> QLox.error(line, "Unexpected character $c.")
         }
     }
 

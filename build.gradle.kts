@@ -8,6 +8,10 @@ plugins {
 group = "org.qianq"
 version = "1.0-SNAPSHOT"
 
+application {
+    mainClass.set("org.qianq.qlox.QLox")
+}
+
 repositories {
     mavenCentral()
 }

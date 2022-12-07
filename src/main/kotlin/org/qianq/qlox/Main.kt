@@ -1,5 +1,6 @@
 package org.qianq.qlox
 
+import org.qianq.qlox.token.Token
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths

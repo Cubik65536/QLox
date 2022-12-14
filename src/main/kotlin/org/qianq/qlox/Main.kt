@@ -29,7 +29,7 @@ class QLox {
         private fun logger(line: Int, where: String = "", message: String, printNewLine: Boolean) {
             if (!printNewLine) {
                 // Don't add new lines when printing logger message
-                println("[line $line]\tLOG $where: ${message.replace('\n', ' ', true)}")
+                println("[line $line]\tLOG $where: ${message.replace("\n", "\\n", true)}")
             } else {
                 // Print log message
                 println("[line $line]\tLOG $where: $message")

@@ -127,7 +127,7 @@ class Scanner (private val src: String) {
                 if (match('/')) {
                     // A comment goes until the end of the line
                     while (peek() != '\n' && !isAtEnd()) nextChar()
-                    println("COMMENT\n${src.substring(start, current)}\nEND OF COMMENT")
+                    QLox.log(line, "COMMENT\t\t${src.substring(start, current)}")
                 } else if (match('*')) {
                     // Start a block comment
                     while ((peek() != '*' || peekNext() != '/') && !isAtEnd()) {
@@ -141,7 +141,7 @@ class Scanner (private val src: String) {
                     }
                     if (match('*') && match('/')) {
                         // End a block comment
-                        println("BLOCK COMMENT\n${src.substring(start, current)}\nEND OF BLOCK COMMENT")
+                        QLox.log(line, "BLOCK COMMENT\t${src.substring(start, current)}")
                     } else {
                         QLox.error(line, "Unterminated comment.")
                     }

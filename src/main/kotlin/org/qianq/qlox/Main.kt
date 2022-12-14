@@ -12,14 +12,28 @@ class QLox {
         var hadError: Boolean = false
 
         fun error(line: Int, message: String) {
-            report(line, "", message)
+            report(line = line, message = message)
         }
 
-        private fun report(line: Int, where: String, message: String) {
+        private fun report(line: Int, where: String = "", message: String) {
             // Print error message
-            System.err.println("[line $line] Error $where: $message")
+            System.err.println("[line $line]\tERROR $where: $message")
             // Set hadError to true
             hadError = true
+        }
+
+        fun log(line: Int, message: String, printNewLine: Boolean = false) {
+            logger(line = line, message = message, printNewLine = printNewLine)
+        }
+
+        private fun logger(line: Int, where: String = "", message: String, printNewLine: Boolean) {
+            if (!printNewLine) {
+                // Don't add new lines when printing logger message
+                println("[line $line]\tLOG $where: ${message.replace('\n', ' ', true)}")
+            } else {
+                // Print log message
+                println("[line $line]\tLOG $where: $message")
+            }
         }
 
         private fun run(src: String) {

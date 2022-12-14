@@ -4,7 +4,26 @@ import org.qianq.qlox.token.Token
 import org.qianq.qlox.token.TokenType
 
 class Scanner (val src: String) {
+    private val keywords: Map<String, TokenType> = mapOf(
+        "and" to TokenType.AND,
+        "class" to TokenType.CLASS,
+        "else" to TokenType.ELSE,
+        "false" to TokenType.FALSE,
+        "for" to TokenType.FOR,
+        "fun" to TokenType.FUN,
+        "if" to TokenType.IF,
+        "nil" to TokenType.NIL,
+        "or" to TokenType.OR,
+        "print" to TokenType.PRINT,
+        "return" to TokenType.RETURN,
+        "super" to TokenType.SUPER,
+        "this" to TokenType.THIS,
+        "true" to TokenType.TRUE,
+        "var" to TokenType.VAR,
+        "while" to TokenType.WHILE
+    )
     val tokens = mutableListOf<Token>()
+
     private var start: Int = 0
     private var current: Int = 0
     private var line: Int = 1
@@ -73,6 +92,21 @@ class Scanner (val src: String) {
         addToken(TokenType.NUMBER, src.substring(start, current).toDouble())
     }
 
+    private fun isAlpha(c: Char): Boolean {
+        return c in 'a'..'z' || c in 'A'..'Z' || c == '_'
+    }
+
+    private fun isNumericAlpha(c: Char): Boolean {
+        return isAlpha(c) || isDigit(c)
+    }
+
+    private fun identifier() {
+        while (isNumericAlpha(peek())) nextChar()
+        val text = src.substring(start, current)
+        val type = keywords[text] ?: TokenType.IDENTIFIER
+        addToken(type)
+    }
+
     private fun scanToken() {
         val c = nextChar()
         when (c) {
@@ -106,6 +140,9 @@ class Scanner (val src: String) {
                 if (isDigit(c)) {
                     // Read a number
                     number()
+                } else if (isAlpha(c)) {
+                    // Read a reserved word or identifier
+                    identifier()
                 } else {
                     // Unknown character
                     QLox.error(line, "Unexpected character.")

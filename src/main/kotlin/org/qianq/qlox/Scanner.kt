@@ -45,8 +45,10 @@ class Scanner (val src: String) {
             return
         }
 
+        // The " at the end of the string
         nextChar()
 
+        // Trim the " at the beginning and end of the string
         val value = src.substring(start + 1, current - 1)
         addToken(TokenType.STRING, value)
     }
@@ -70,14 +72,16 @@ class Scanner (val src: String) {
             '>' -> addToken(if (match('=')) TokenType.GREATER_EQUAL else TokenType.GREATER)
             '/' -> {
                 if (match('/')) {
+                    // A comment goes until the end of the line
                     while (peek() != '\n' && !isAtEnd()) nextChar()
                 } else {
+                    // A division operator
                     addToken(TokenType.SLASH)
                 }
             }
-            ' ', '\r', '\t' -> {}
-            '\n' -> line++
-            '"' -> string()
+            ' ', '\r', '\t' -> {} // Ignore whitespace
+            '\n' -> line++ // New line
+            '"' -> string() // Read a string
             else -> QLox.error(line, "Unexpected character $c.")
         }
     }

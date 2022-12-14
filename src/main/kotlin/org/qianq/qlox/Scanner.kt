@@ -33,11 +33,6 @@ class Scanner (val src: String) {
         tokens.add(Token(type, text, literal, line))
     }
 
-    private fun advance(steps: Int = 1): Char {
-        current += steps
-        return src[current - 1]
-    }
-
     private fun nextChar(): Char {
         return src[current++]
     }

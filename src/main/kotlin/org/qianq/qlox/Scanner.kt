@@ -34,6 +34,11 @@ class Scanner (val src: String) {
         return src[current]
     }
 
+    private fun peekNext(): Char {
+        if (current + 1 >= src.length) return '\u0000'
+        return src[current + 1]
+    }
+
     private fun string() {
         while (peek() != '"' && !isAtEnd()) {
             if (peek() == '\n') line++
@@ -51,6 +56,21 @@ class Scanner (val src: String) {
         // Trim the " at the beginning and end of the string
         val value = src.substring(start + 1, current - 1)
         addToken(TokenType.STRING, value)
+    }
+
+    private fun isDigit(c: Char): Boolean {
+        return c in '0'..'9'
+    }
+
+    private fun number() {
+        while (isDigit(peek())) nextChar()
+        if (peek() == '.' && isDigit(peekNext())) {
+            // Looking for a fractional part
+            // Consume the "."
+            nextChar()
+            while (isDigit(peek())) nextChar()
+        }
+        addToken(TokenType.NUMBER, src.substring(start, current).toDouble())
     }
 
     private fun scanToken() {
@@ -82,7 +102,15 @@ class Scanner (val src: String) {
             ' ', '\r', '\t' -> {} // Ignore whitespace
             '\n' -> line++ // New line
             '"' -> string() // Read a string
-            else -> QLox.error(line, "Unexpected character $c.")
+            else -> {
+                if (isDigit(c)) {
+                    // Read a number
+                    number()
+                } else {
+                    // Unknown character
+                    QLox.error(line, "Unexpected character.")
+                }
+            }
         }
     }
 

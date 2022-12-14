@@ -4,6 +4,7 @@ import org.qianq.qlox.token.Token
 import org.qianq.qlox.token.TokenType
 
 class Scanner (private val src: String) {
+    private val tokens = mutableListOf<Token>()
     private val keywords: Map<String, TokenType> = mapOf(
         "and" to TokenType.AND,
         "class" to TokenType.CLASS,
@@ -22,7 +23,6 @@ class Scanner (private val src: String) {
         "var" to TokenType.VAR,
         "while" to TokenType.WHILE
     )
-    val tokens = mutableListOf<Token>()
 
     private var start: Int = 0
     private var current: Int = 0

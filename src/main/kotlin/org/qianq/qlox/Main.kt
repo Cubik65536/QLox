@@ -9,7 +9,7 @@ import kotlin.system.exitProcess
 class QLox {
     companion object {
         // If a known error have been found
-        var hadError: Boolean = false
+        private var hadError: Boolean = false
 
         fun error(line: Int, message: String) {
             report(line = line, message = message)

@@ -22,6 +22,13 @@ class Scanner (val src: String) {
         return current >= src.length
     }
 
+    private fun match(expected: Char): Boolean {
+        if (isAtEnd()) return false
+        if (src[current] != expected) return false
+        current++
+        return true
+    }
+
     private fun scanToken() {
         val c = nextChar()
         when (c) {
@@ -35,6 +42,10 @@ class Scanner (val src: String) {
             '+' -> addToken(TokenType.PLUS)
             ';' -> addToken(TokenType.SEMICOLON)
             '*' -> addToken(TokenType.STAR)
+            '!' -> addToken(if (match('=')) TokenType.BANG_EQUAL else TokenType.BANG)
+            '=' -> addToken(if (match('=')) TokenType.EQUAL_EQUAL else TokenType.EQUAL)
+            '<' -> addToken(if (match('=')) TokenType.LESS_EQUAL else TokenType.LESS)
+            '>' -> addToken(if (match('=')) TokenType.GREATER_EQUAL else TokenType.GREATER)
             else -> QLox.error(line, "Unexpected character $c.")
         }
     }

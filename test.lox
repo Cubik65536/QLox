@@ -1,6 +1,13 @@
 // This is a single line comment
 /* This is a block comment in one line */
+/*
+ This is a block comment
+ in multiple line
+ for test
+ */
 /* This is a block comment
  * in multiple line
  * for test
  */
+
+"Hello World!"

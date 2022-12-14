@@ -34,6 +34,23 @@ class Scanner (val src: String) {
         return src[current]
     }
 
+    private fun string() {
+        while (peek() != '"' && !isAtEnd()) {
+            if (peek() == '\n') line++
+            nextChar()
+        }
+
+        if (isAtEnd()) {
+            QLox.error(line, "Unterminated string.")
+            return
+        }
+
+        nextChar()
+
+        val value = src.substring(start + 1, current - 1)
+        addToken(TokenType.STRING, value)
+    }
+
     private fun scanToken() {
         val c = nextChar()
         when (c) {
@@ -60,6 +77,7 @@ class Scanner (val src: String) {
             }
             ' ', '\r', '\t' -> {}
             '\n' -> line++
+            '"' -> string()
             else -> QLox.error(line, "Unexpected character $c.")
         }
     }

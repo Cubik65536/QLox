@@ -3,7 +3,7 @@ package org.qianq.qlox
 import org.qianq.qlox.token.Token
 import org.qianq.qlox.token.TokenType
 
-class Scanner (val src: String) {
+class Scanner (private val src: String) {
     private val keywords: Map<String, TokenType> = mapOf(
         "and" to TokenType.AND,
         "class" to TokenType.CLASS,

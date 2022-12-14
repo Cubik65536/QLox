@@ -33,6 +33,11 @@ class Scanner (val src: String) {
         tokens.add(Token(type, text, literal, line))
     }
 
+    private fun advance(steps: Int = 1): Char {
+        current += steps
+        return src[current - 1]
+    }
+
     private fun nextChar(): Char {
         return src[current++]
     }
@@ -128,6 +133,17 @@ class Scanner (val src: String) {
                 if (match('/')) {
                     // A comment goes until the end of the line
                     while (peek() != '\n' && !isAtEnd()) nextChar()
+                    println("Single Line Comment: ${src.substring(start, current)}")
+                } else if (match('*')) {
+                    while (peek() != '*' && peekNext() != '/' && !isAtEnd()) {
+                        if (peek() == '\n') line++
+                        nextChar()
+                    }
+                    if (match('*') && match('/')) {
+                        println("Multi Line Comment: ${src.substring(start, current)}")
+                    } else {
+                        QLox.error(line, "Unterminated comment.")
+                    }
                 } else {
                     // A division operator
                     addToken(TokenType.SLASH)

@@ -5,8 +5,24 @@ import kotlin.system.exitProcess
 
 class GenerateAst {
     companion object {
+        private fun defineVisitor(writer: PrintWriter, baseName: String, types: List<String>) {
+            writer.println("    interface Visitor<R> {")
+            for (type in types) {
+                val typeName = type.split("->")[0].trim()
+                writer.println("        fun visit$typeName$baseName(${baseName.lowercase()}: $typeName): R")
+            }
+            writer.println("    }")
+        }
+
         private fun defineType(writer: PrintWriter, baseName: String, className: String, fields: String) {
-            writer.println("    class $className($fields) : $baseName()")
+            writer.println("    class $className($fields) : $baseName() {")
+
+            // Visitor pattern.
+            writer.println("        override fun <R> accept(visitor: Visitor<R>): R {")
+            writer.println("            return visitor.visit$className$baseName(this)")
+            writer.println("        }")
+
+            writer.println("    }")
         }
 
         private fun defineAst(outputDir: String, baseName: String, types: List<String>) {
@@ -19,12 +35,19 @@ class GenerateAst {
             writer.println()
             writer.println("abstract class $baseName {")
 
+            defineVisitor(writer, baseName, types)
+            writer.println()
+
             for (type in types) {
                 val subclass = type.split("->")
                 val className = subclass[0].trim()
                 val fields = subclass[1].trim()
                 defineType(writer, baseName, className, fields)
+                writer.println()
             }
+
+            // The base accept() method.
+            writer.println("    abstract fun <R> accept(visitor: Visitor<R>): R")
 
             writer.println("}")
             writer.close()

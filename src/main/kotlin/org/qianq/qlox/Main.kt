@@ -1,6 +1,7 @@
 package org.qianq.qlox
 
 import org.qianq.qlox.token.Token
+import org.qianq.qlox.token.TokenType
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -20,6 +21,14 @@ class QLox {
             System.err.println("[line $line]\tERROR $where: $message")
             // Set hadError to true
             hadError = true
+        }
+
+        fun error(token: Token, message: String?) {
+            if (token.type === TokenType.EOF) {
+                report(token.line, " at end", message!!)
+            } else {
+                report(token.line, " at '" + token.lexeme + "'", message!!)
+            }
         }
 
         fun log(line: Int, message: String, printNewLine: Boolean = false) {

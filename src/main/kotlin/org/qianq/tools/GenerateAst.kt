@@ -9,20 +9,21 @@ class GenerateAst {
             writer.println("    interface Visitor<R> {")
             for (type in types) {
                 val typeName = type.split("->")[0].trim()
-                writer.println("        fun visit$typeName$baseName(${baseName.lowercase()}: $typeName): R")
+                writer.println("        fun visit$baseName(${baseName.lowercase()}: $typeName): R")
             }
             writer.println("    }")
         }
 
         private fun defineType(writer: PrintWriter, baseName: String, className: String, fields: String) {
-            writer.println("    class $className($fields) : $baseName() {")
+            writer.println("class $className($fields) : $baseName() {")
 
             // Visitor pattern.
-            writer.println("        override fun <R> accept(visitor: Visitor<R>): R {")
-            writer.println("            return visitor.visit$className$baseName(this)")
-            writer.println("        }")
-
+            writer.println("    override fun <R> accept(visitor: Visitor<R>): R {")
+            writer.println("        return visitor.visit$baseName(this)")
             writer.println("    }")
+
+            writer.println("}")
+            writer.println()
         }
 
         private fun defineAst(outputDir: String, baseName: String, types: List<String>) {
@@ -35,7 +36,11 @@ class GenerateAst {
             writer.println()
             writer.println("abstract class $baseName {")
 
+            // The base accept() method.
+            writer.println("    abstract fun <R> accept(visitor: Visitor<R>): R")
+
             defineVisitor(writer, baseName, types)
+            writer.println("}")
             writer.println()
 
             for (type in types) {
@@ -43,13 +48,8 @@ class GenerateAst {
                 val className = subclass[0].trim()
                 val fields = subclass[1].trim()
                 defineType(writer, baseName, className, fields)
-                writer.println()
             }
 
-            // The base accept() method.
-            writer.println("    abstract fun <R> accept(visitor: Visitor<R>): R")
-
-            writer.println("}")
             writer.close()
         }
 

@@ -5,6 +5,8 @@ import org.qianq.qlox.token.TokenType
 import org.qianq.qlox.token.TokenType.*
 
 class Parser(private val tokens: List<Token>) {
+    class ParseError : RuntimeException()
+
     private var current: Int = 0
 
     private fun isAtEnd(): Boolean {

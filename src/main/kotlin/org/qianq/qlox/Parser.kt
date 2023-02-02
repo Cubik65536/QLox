@@ -89,6 +89,8 @@ class Parser(private val tokens: List<Token>) {
             consume(RIGHT_PAREN, "Expect ')' after expression.")
             return Grouping(expr)
         }
+
+        throw error(peek(), "Expect expression.")
     }
 
     // unary → ( "!" | "-" ) unary

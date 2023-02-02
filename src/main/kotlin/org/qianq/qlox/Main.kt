@@ -49,9 +49,16 @@ class QLox {
             // Run the instruction
             val scanner = Scanner(src)
             val tokens: List<Token> = scanner.scanTokens()
-            for (token in tokens) {
-                println(token)
-            }
+
+            // Parse the tokens
+            val parser = Parser(tokens)
+            val expressions = parser.parse()
+
+            // Stop if there was a syntax error
+            if (hadError) return
+
+            // Print the AST
+            println(expressions?.let { AstPrinter().print(it) })
         }
 
         private fun runPrompt() {

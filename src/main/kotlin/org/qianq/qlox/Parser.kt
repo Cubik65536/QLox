@@ -9,6 +9,11 @@ class Parser(private val tokens: List<Token>) {
 
     private var current: Int = 0
 
+    private fun error(token: Token, message: String): ParseError {
+        QLox.error(token, message)
+        return ParseError()
+    }
+
     private fun isAtEnd(): Boolean {
         return peek().type === EOF
     }
@@ -39,6 +44,12 @@ class Parser(private val tokens: List<Token>) {
             }
         }
         return false
+    }
+
+    // Entering Panic Mode
+    private fun consume(type: TokenType, message: String): Token {
+        if (check(type)) return advance()
+        throw error(peek(), message)
     }
 
     // Expression parsers

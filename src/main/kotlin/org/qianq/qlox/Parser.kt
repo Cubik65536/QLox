@@ -14,6 +14,23 @@ class Parser(private val tokens: List<Token>) {
         return ParseError()
     }
 
+    // Synchronizing a recursive descent parser
+    private fun synchronize() {
+        advance()
+
+        while (!isAtEnd()) {
+            if (previous().type == SEMICOLON) return
+
+            when (peek().type) {
+                CLASS, FUN, VAR, FOR, IF, WHILE, PRINT, RETURN -> return
+                else -> {}
+            }
+
+            advance()
+        }
+    }
+
+
     private fun isAtEnd(): Boolean {
         return peek().type === EOF
     }

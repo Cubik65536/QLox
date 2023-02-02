@@ -163,4 +163,12 @@ class Parser(private val tokens: List<Token>) {
     private fun expression(): Expr {
         return equality()
     }
+
+    fun parse(): Expr? {
+        try {
+            return expression()
+        } catch (error: ParseError) {
+            return null
+        }
+    }
 }

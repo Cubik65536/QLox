@@ -9,6 +9,7 @@ import kotlin.system.exitProcess
 
 class QLox {
     companion object {
+        private val interpreter = Interpreter()
         // If a known error have been found
         private var hadError: Boolean = false
         // If a runtime error have been found
@@ -64,8 +65,10 @@ class QLox {
             // Stop if there was a syntax error
             if (hadError) return
 
-            // Print the AST
-            println(expressions?.let { AstPrinter().print(it) })
+            // Run the interpreter
+            if (expressions != null) {
+                interpreter.interpret(expressions)
+            }
         }
 
         private fun runPrompt() {

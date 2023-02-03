@@ -103,7 +103,7 @@ class Interpreter: Expr.Visitor<Any> {
 
     // Evaluating literals
     override fun visitExpr(expr: Literal): Any {
-        return expr.value
+        return expr.value!!
     }
 
     // Evaluating unary expressions
@@ -125,6 +125,7 @@ class Interpreter: Expr.Visitor<Any> {
     fun interpret(expr: Expr) {
         try {
             val value = evaluate(expr)
+            println(stringify(value))
         } catch (error: RuntimeError) {
             QLox.runtimeError(error)
         }

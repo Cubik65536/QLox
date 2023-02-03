@@ -24,7 +24,7 @@ class Grouping(val expression: Expr) : Expr() {
     }
 }
 
-class Literal(val value: Any) : Expr() {
+class Literal(val value: Any?) : Expr() {
     override fun <R> accept(visitor: Visitor<R>): R {
         return visitor.visitExpr(this)
     }

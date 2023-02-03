@@ -11,6 +11,8 @@ class QLox {
     companion object {
         // If a known error have been found
         private var hadError: Boolean = false
+        // If a runtime error have been found
+        private var hadRuntimeError: Boolean = false
 
         fun error(line: Int, message: String) {
             report(line = line, message = message)
@@ -29,6 +31,11 @@ class QLox {
             } else {
                 report(token.line, " at '" + token.lexeme + "'", message!!)
             }
+        }
+
+        fun runtimeError(error: RuntimeError) {
+            System.err.println("${error.message}\n[line ${error.token.line}]")
+            hadRuntimeError = true
         }
 
         fun log(line: Int, message: String, printNewLine: Boolean = false) {
@@ -80,6 +87,8 @@ class QLox {
             run(String(bytes, StandardCharsets.UTF_8))
             // Found and error and exit
             if (hadError) exitProcess(65)
+            // Found a runtime error and exit
+            if (hadRuntimeError) exitProcess(70)
         }
 
         @JvmStatic

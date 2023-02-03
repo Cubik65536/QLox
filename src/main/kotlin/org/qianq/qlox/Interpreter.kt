@@ -4,6 +4,21 @@ import org.qianq.qlox.token.Token
 import org.qianq.qlox.token.TokenType.*
 
 class Interpreter: Expr.Visitor<Any> {
+    private fun stringify(obj: Any?): String {
+        return if (obj == null) {
+            "nil"
+        } else if (obj is Double) {
+            val text = obj.toString()
+            if (text.endsWith(".0")) {
+                text.substring(0, text.length - 2)
+            } else {
+                text
+            }
+        } else {
+            obj.toString()
+        }
+    }
+
     private fun checkNumberOperand(operator: Token, operand: Any?) {
         if (operand is Double) return
         throw RuntimeError(operator, "Operand must be a number.")
@@ -105,5 +120,13 @@ class Interpreter: Expr.Visitor<Any> {
             else -> null
         }!!
 
+    }
+
+    fun interpret(expr: Expr) {
+        try {
+            val value = evaluate(expr)
+        } catch (error: RuntimeError) {
+            QLox.runtimeError(error)
+        }
     }
 }

@@ -65,7 +65,7 @@ class GenerateAst {
                 outputDir, "Expr", listOf(
                     "Binary   -> val left: Expr, val operator: Token, val right: Expr",
                     "Grouping -> val expression: Expr",
-                    "Literal  -> val value: Any?",
+                    "Literal  -> val value: Any",
                     "Unary    -> val operator: Token, val right: Expr"
                 )
             )

@@ -18,6 +18,10 @@ class AstPrinter: Expr.Visitor<String> {
         return expr.accept(this)
     }
 
+    override fun visitExpr(expr: Assign): String {
+        TODO("Not yet implemented")
+    }
+
     override fun visitExpr(expr: Binary): String {
         return parenthesize(expr.operator.lexeme, expr.left, expr.right)
     }
@@ -33,5 +37,9 @@ class AstPrinter: Expr.Visitor<String> {
 
     override fun visitExpr(expr: Unary): String {
         return parenthesize(expr.operator.lexeme, expr.right)
+    }
+
+    override fun visitExpr(expr: Variable): String {
+        TODO("Not yet implemented")
     }
 }

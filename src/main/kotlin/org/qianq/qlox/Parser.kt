@@ -74,7 +74,8 @@ class Parser(private val tokens: List<Token>) {
     // Unary Operators
 
     // primary → NUMBER | STRING | "true" | "false" | "nil"
-    //        | "(" expression ")" ;
+    //        | "(" expression ")"
+    //        | IDENTIFIER ;
     private fun primary(): Expr {
         if (match(FALSE)) return Literal(false)
         if (match(TRUE)) return Literal(true)
@@ -82,6 +83,10 @@ class Parser(private val tokens: List<Token>) {
 
         if (match(NUMBER, STRING)) {
             return Literal(previous().literal)
+        }
+
+        if (match(IDENTIFIER)) {
+            return Variable(previous())
         }
 
         if (match(LEFT_PAREN)) {
@@ -159,12 +164,27 @@ class Parser(private val tokens: List<Token>) {
         return expr
     }
 
-    // expression → equality ;
+    // expression → assignment ;
     private fun expression(): Expr {
-        return equality()
+        return assignment()
     }
 
     // Statement parsers
+
+    // declaration → varDecl
+    //             | statement ;
+    private fun declaration(): Stmt {
+        return try {
+            if (match(VAR)) {
+                varDeclaration()
+            } else {
+                statement()
+            }
+        } catch (error: ParseError) {
+            synchronize()
+            return null!!
+        }
+    }
 
     // statement      → exprStmt
     //                | printStmt ;
@@ -180,6 +200,21 @@ class Parser(private val tokens: List<Token>) {
         return Print(value)
     }
 
+    // varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
+    private fun varDeclaration(): Stmt {
+        QLox.log(-1, "varDeclaration", true)
+        val name: Token = consume(IDENTIFIER, "Expect variable name.")
+        QLox.log(-1, "varDeclaration, name: " + name.lexeme, true)
+
+        var initializer: Expr? = null
+        if (match(EQUAL)) {
+            initializer = expression()
+        }
+
+        consume(SEMICOLON, "Expect ';' after variable declaration.")
+        return Var(name, initializer)
+    }
+
     // exprStmt       → expression ";" ;
     private fun expressionStatement(): Stmt {
         val expr: Expr = expression()
@@ -187,10 +222,30 @@ class Parser(private val tokens: List<Token>) {
         return Expression(expr)
     }
 
+    // assignment     → IDENTIFIER "=" assignment
+    //                | equality ;
+    private fun assignment(): Expr {
+        val expr: Expr = equality()
+
+        if (match(EQUAL)) {
+            val equals: Token = previous()
+            val value: Expr = assignment()
+
+            if (expr is Variable) {
+                val name: Token = expr.name
+                return Assign(name, value)
+            }
+
+            error(equals, "Invalid assignment target.")
+        }
+
+        return expr
+    }
+
     fun parse(): List<Stmt> {
         val statements: MutableList<Stmt> = mutableListOf()
         while (!isAtEnd()) {
-            statements.add(statement())
+            statements.add(declaration())
         }
         return statements
     }

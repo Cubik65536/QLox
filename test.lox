@@ -13,3 +13,22 @@
 print "one"; // Printing a string
 print true; // Printing a boolean
 print 2 + 1; // Printing an expression
+
+var a = 1; // Declaring a variable
+print a; // Printing a variable
+a = 2; // Assigning a new value to a variable
+print a; // Printing a variable
+
+var b = 1; // Declaring a variable
+b = 2; // Assigning a new value to a variable
+var c = 2; // Declaring a variable
+print b + c; // Printing an expression
+
+/* Expected output:
+ one
+ true
+ 3
+ 1
+ 2
+ 4
+ */

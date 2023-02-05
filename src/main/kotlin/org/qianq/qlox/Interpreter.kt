@@ -4,6 +4,8 @@ import org.qianq.qlox.token.Token
 import org.qianq.qlox.token.TokenType.*
 
 class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
+    private val globals = Environment()
+
     private fun stringify(obj: Any?): String {
         return if (obj == null) {
             "nil"
@@ -48,6 +50,12 @@ class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
         if (a == null && b == null) return true
         if (a == null) return false
         return a == b
+    }
+
+    override fun visitExpr(expr: Assign): Any {
+        val value = evaluate(expr.value)
+        globals.assign(expr.name, value)
+        return value
     }
 
     override fun visitExpr(expr: Binary): Any {
@@ -126,6 +134,10 @@ class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
 
     }
 
+    override fun visitExpr(expr: Variable): Any {
+        return globals.get(expr.name)!!
+    }
+
     // Evaluating statements
     override fun visitStmt(stmt: Expression) {
         evaluate(stmt.expression)
@@ -134,6 +146,15 @@ class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
     override fun visitStmt(stmt: Print) {
         val value = evaluate(stmt.expression)
         println(stringify(value))
+    }
+
+    override fun visitStmt(stmt: Var) {
+        val value = if (stmt.initializer != null) {
+            evaluate(stmt.initializer)
+        } else {
+            null
+        }
+        globals.define(stmt.name.lexeme, value)
     }
 
     fun interpret(statements: List<Stmt>) {

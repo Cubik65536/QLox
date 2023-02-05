@@ -10,6 +10,6 @@
  * for test
  */
 
-print "one";
-print true;
-print 2 + 1;
+print "one"; // Printing a string
+print true; // Printing a boolean
+print 2 + 1; // Printing an expression

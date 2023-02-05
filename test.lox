@@ -27,10 +27,6 @@ print b + c; // Printing an expression
 {
     var s = "one"; // Declaring a variable
     print s; // Printing a variable
-    {
-        var s = "two"; // Declaring a variable
-        print s; // Printing a variable
-    }
 }
 
 /* Expected output:

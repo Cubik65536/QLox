@@ -1,0 +1,9 @@
+var a = "global a";
+{
+    var x = "inner x";
+    print a; // global a
+    print x; // inner x
+}
+
+print a; // global a
+print x; // ERROR: Undefined variable 'x'.

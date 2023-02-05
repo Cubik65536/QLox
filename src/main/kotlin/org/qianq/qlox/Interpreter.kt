@@ -4,8 +4,7 @@ import org.qianq.qlox.token.Token
 import org.qianq.qlox.token.TokenType.*
 
 class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
-    private val globals = Environment()
-    private var environment = globals
+    private var globals = Environment()
 
     private fun stringify(obj: Any?): String {
         return if (obj == null) {
@@ -41,14 +40,14 @@ class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
     }
 
     private fun executeBlock(statements: List<Stmt>, environment: Environment) {
-        val previous = this.environment
+        val previous = this.globals
         try {
-            this.environment = environment
+            this.globals = environment
             for (statement in statements) {
                 execute(statement)
             }
         } finally {
-            this.environment = previous
+            this.globals = previous
         }
     }
 

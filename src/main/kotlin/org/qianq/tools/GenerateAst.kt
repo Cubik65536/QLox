@@ -69,6 +69,12 @@ class GenerateAst {
                     "Unary    -> val operator: Token, val right: Expr"
                 )
             )
+            defineAst(
+                outputDir, "Stmt", listOf(
+                    "Expression -> val expression: Expr",
+                    "Print      -> val expression: Expr"
+                )
+            )
         }
     }
 }

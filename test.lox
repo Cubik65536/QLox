@@ -24,6 +24,15 @@ b = 2; // Assigning a new value to a variable
 var c = 2; // Declaring a variable
 print b + c; // Printing an expression
 
+{
+    var s = "one"; // Declaring a variable
+    print s; // Printing a variable
+    {
+        var s = "two"; // Declaring a variable
+        print s; // Printing a variable
+    }
+}
+
 /* Expected output:
  one
  true
@@ -31,4 +40,5 @@ print b + c; // Printing an expression
  1
  2
  4
+ one
  */

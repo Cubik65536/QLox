@@ -187,9 +187,11 @@ class Parser(private val tokens: List<Token>) {
     }
 
     // statement      → exprStmt
-    //                | printStmt ;
+    //                | printStmt
+    //                | block ;
     private fun statement(): Stmt {
         if (match(PRINT)) return printStatement()
+        if (match(LEFT_BRACE)) return blockStatement()
         return expressionStatement()
     }
 
@@ -202,9 +204,7 @@ class Parser(private val tokens: List<Token>) {
 
     // varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
     private fun varDeclaration(): Stmt {
-        QLox.log(-1, "varDeclaration", true)
         val name: Token = consume(IDENTIFIER, "Expect variable name.")
-        QLox.log(-1, "varDeclaration, name: " + name.lexeme, true)
 
         var initializer: Expr? = null
         if (match(EQUAL)) {
@@ -220,6 +220,16 @@ class Parser(private val tokens: List<Token>) {
         val expr: Expr = expression()
         consume(SEMICOLON, "Expect ';' after expression.")
         return Expression(expr)
+    }
+
+    // block          → "{" declaration* "}" ;
+    private fun blockStatement(): Stmt {
+        val statements: MutableList<Stmt> = mutableListOf()
+        while (!check(RIGHT_BRACE) && !isAtEnd()) {
+            statements.add(declaration())
+        }
+        consume(RIGHT_BRACE, "Expect '}' after block.")
+        return Block(statements)
     }
 
     // assignment     → IDENTIFIER "=" assignment

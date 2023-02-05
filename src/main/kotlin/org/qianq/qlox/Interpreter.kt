@@ -5,6 +5,7 @@ import org.qianq.qlox.token.TokenType.*
 
 class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
     private val globals = Environment()
+    private var environment = globals
 
     private fun stringify(obj: Any?): String {
         return if (obj == null) {
@@ -37,6 +38,18 @@ class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
 
     private fun execute(stmt: Stmt) {
         stmt.accept(this)
+    }
+
+    private fun executeBlock(statements: List<Stmt>, environment: Environment) {
+        val previous = this.environment
+        try {
+            this.environment = environment
+            for (statement in statements) {
+                execute(statement)
+            }
+        } finally {
+            this.environment = previous
+        }
     }
 
     // `false` and `nil` are `false`, everything else is `true`
@@ -136,6 +149,10 @@ class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
 
     override fun visitExpr(expr: Variable): Any {
         return globals.get(expr.name)!!
+    }
+
+    override fun visitStmt(stmt: Block) {
+        executeBlock(stmt.statements, Environment(globals))
     }
 
     // Evaluating statements

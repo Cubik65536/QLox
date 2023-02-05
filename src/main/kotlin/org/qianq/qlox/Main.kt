@@ -60,15 +60,13 @@ class QLox {
 
             // Parse the tokens
             val parser = Parser(tokens)
-            val expressions = parser.parse()
+            val statements: List<Stmt> = parser.parse()
 
             // Stop if there was a syntax error
             if (hadError) return
 
             // Run the interpreter
-            if (expressions != null) {
-                interpreter.interpret(expressions)
-            }
+            interpreter.interpret(statements)
         }
 
         private fun runPrompt() {

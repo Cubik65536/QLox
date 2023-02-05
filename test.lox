@@ -10,6 +10,6 @@
  * for test
  */
 
-"Hello World!"
-
-12 * 10 + 8
+print "one";
+print true;
+print 2 + 1;

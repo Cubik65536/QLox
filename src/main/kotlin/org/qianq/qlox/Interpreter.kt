@@ -3,7 +3,7 @@ package org.qianq.qlox
 import org.qianq.qlox.token.Token
 import org.qianq.qlox.token.TokenType.*
 
-class Interpreter: Expr.Visitor<Any> {
+class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
     private fun stringify(obj: Any?): String {
         return if (obj == null) {
             "nil"
@@ -31,6 +31,10 @@ class Interpreter: Expr.Visitor<Any> {
 
     private fun evaluate(expr: Expr): Any {
         return expr.accept(this)
+    }
+
+    private fun execute(stmt: Stmt) {
+        stmt.accept(this)
     }
 
     // `false` and `nil` are `false`, everything else is `true`
@@ -122,10 +126,21 @@ class Interpreter: Expr.Visitor<Any> {
 
     }
 
-    fun interpret(expr: Expr) {
+    // Evaluating statements
+    override fun visitStmt(stmt: Expression) {
+        evaluate(stmt.expression)
+    }
+
+    override fun visitStmt(stmt: Print) {
+        val value = evaluate(stmt.expression)
+        println(stringify(value))
+    }
+
+    fun interpret(statements: List<Stmt>) {
         try {
-            val value = evaluate(expr)
-            println(stringify(value))
+            for (statement in statements) {
+                execute(statement)
+            }
         } catch (error: RuntimeError) {
             QLox.runtimeError(error)
         }

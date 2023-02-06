@@ -130,8 +130,17 @@ class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
         return expr.value!!
     }
 
+    // Evaluating logical expressions
     override fun visitExpr(expr: Logical): Any {
-        TODO("Not yet implemented")
+        val left = evaluate(expr.left)
+
+        if (expr.operator.type == OR) {
+            if (isTruthy(left)) return left
+        } else {
+            if (!isTruthy(left)) return left
+        }
+
+        return evaluate(expr.right)
     }
 
     // Evaluating unary expressions
@@ -150,6 +159,7 @@ class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
 
     }
 
+    // Evaluating variables
     override fun visitExpr(expr: Variable): Any {
         return globals.get(expr.name)!!
     }
@@ -158,7 +168,6 @@ class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
         executeBlock(stmt.statements, Environment(globals))
     }
 
-    // Evaluating statements
     override fun visitStmt(stmt: Expression) {
         evaluate(stmt.expression)
     }

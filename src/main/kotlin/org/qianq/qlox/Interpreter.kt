@@ -194,6 +194,10 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         globals.define(stmt.name.lexeme, value)
     }
 
+    override fun visitStmt(stmt: While) {
+        TODO("Not yet implemented")
+    }
+
     fun interpret(statements: List<Stmt>) {
         try {
             for (statement in statements) {

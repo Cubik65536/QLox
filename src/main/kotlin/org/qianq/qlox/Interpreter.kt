@@ -116,8 +116,7 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
             EQUAL_EQUAL -> isEqual(left, right)
             // Unreachable.
             else -> null
-        }!!
-
+        }
     }
 
     // Evaluating parentheses

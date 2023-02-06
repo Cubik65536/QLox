@@ -29,6 +29,9 @@ print b + c; // Printing an expression
     print s; // Printing a variable
 }
 
+print "hi" or 2;    // hi
+print nil or "yes"; // yes
+
 /* Expected output:
  one
  true
@@ -37,4 +40,6 @@ print b + c; // Printing an expression
  2
  4
  one
+ hi
+ yes
  */

@@ -130,6 +130,10 @@ class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
         return expr.value!!
     }
 
+    override fun visitExpr(expr: Logical): Any {
+        TODO("Not yet implemented")
+    }
+
     // Evaluating unary expressions
     override fun visitExpr(expr: Unary): Any {
         val right = evaluate(expr.right)

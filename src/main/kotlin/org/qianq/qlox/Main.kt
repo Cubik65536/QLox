@@ -2,6 +2,7 @@ package org.qianq.qlox
 
 import org.qianq.qlox.token.Token
 import org.qianq.qlox.token.TokenType
+import org.qianq.qlox.utils.VersionUtil
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -98,8 +99,19 @@ class QLox {
             when (args.size) {
                 // If no arguments were given when running the program, run the REPL
                 0 -> runPrompt()
-                // If one argument was given (the file path), run the file
-                1 -> runFile(args[0])
+                // If one argument was given (the file path)
+                1 -> {
+                    if (args[0] == "-version") {
+                        // Print the version and exit
+                        VersionUtil.loadVersionProperties()
+                        println("QLox Interpreter Version QLox-${VersionUtil.getProperty("version")}-"
+                                + "${VersionUtil.getProperty("stage")} (build ${VersionUtil.getProperty("revision")})")
+                        exitProcess(0)
+                    } else {
+                        // Run the file
+                        runFile(args[0])
+                    }
+                }
                 // Otherwise, print the usage help message and exit
                 else -> {
                     println("Usage: qlox [script]")

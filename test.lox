@@ -38,6 +38,10 @@ while (a < 5) { // While loop
     a = a + 1;
 }
 
+for (var i = 1; i < 5; i = i + 1) { // For loop
+    print i;
+}
+
 /* Expected output:
  one
  true
@@ -48,6 +52,10 @@ while (a < 5) { // While loop
  one
  hi
  yes
+ 1
+ 2
+ 3
+ 4
  1
  2
  3

@@ -187,16 +187,62 @@ class Parser(private val tokens: List<Token>) {
     }
 
     // statement      → exprStmt
+    //                | forStmt
     //                | ifStmt
     //                | printStmt
     //                | whileStmt
     //                | block ;
     private fun statement(): Stmt {
+        if (match(FOR)) return forStatement()
         if (match(IF)) return ifStatement()
         if (match(PRINT)) return printStatement()
         if (match(WHILE)) return whileStatement()
         if (match(LEFT_BRACE)) return blockStatement()
         return expressionStatement()
+    }
+
+    // forStmt        → "for" "(" ( varDecl | exprStmt | ";" )
+    //                expression? ";"
+    //                expression? ")" statement ;
+    private fun forStatement(): Stmt {
+        consume(LEFT_PAREN, "Expect '(' after 'for'.")
+
+        val initializer: Stmt? = if (match(SEMICOLON)) {
+            null
+        } else if (match(VAR)) {
+            varDeclaration()
+        } else {
+            expressionStatement()
+        }
+
+        var condition: Expr? = if (!check(SEMICOLON)) {
+            expression()
+        } else {
+            null
+        }
+        consume(SEMICOLON, "Expect ';' after loop condition.")
+
+        val increment: Expr? = if (!check(RIGHT_PAREN)) {
+            expression()
+        } else {
+            null
+        }
+        consume(RIGHT_PAREN, "Expect ')' after for clauses.")
+
+        var body: Stmt = statement()
+
+        if (increment != null) {
+            body = Block(listOf(body, Expression(increment)))
+        }
+
+        if (condition == null) condition = Literal(true)
+        body = While(condition, body)
+
+        if (initializer != null) {
+            body = Block(listOf(initializer, body))
+        }
+
+        return body
     }
 
     // ifStmt         → "if" "(" expression ")" statement

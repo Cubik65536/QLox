@@ -32,6 +32,12 @@ print b + c; // Printing an expression
 print "hi" or 2;    // hi
 print nil or "yes"; // yes
 
+var a = 1;
+while (a < 5) { // While loop
+    print a;
+    a = a + 1;
+}
+
 /* Expected output:
  one
  true
@@ -42,4 +48,8 @@ print nil or "yes"; // yes
  one
  hi
  yes
+ 1
+ 2
+ 3
+ 4
  */

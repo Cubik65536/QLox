@@ -14,7 +14,13 @@ A [Lox](http://www.craftinginterpreters.com/the-lox-language.html) interpreter w
 1. Get artifact from latest GitHub Actions run
 2. Unzip the artifact
 3. Create a plain text file with the Lox code you want to run
-4. Run the JAR with the file as argument
+4. Check the version of the interpreter of the JAR with the `-version` flag
+
+    ```bash
+    java -jar QLox-[version]-[<stage>]-[revision].jar -version
+    ```
+   
+5. Run the JAR with the file as argument
 
     ```bash
     java -jar QLox-[version]-[<stage>]-[revision].jar <file>

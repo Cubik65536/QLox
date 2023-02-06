@@ -189,10 +189,12 @@ class Parser(private val tokens: List<Token>) {
     // statement      → exprStmt
     //                | ifStmt
     //                | printStmt
+    //                | whileStmt
     //                | block ;
     private fun statement(): Stmt {
         if (match(IF)) return ifStatement()
         if (match(PRINT)) return printStatement()
+        if (match(WHILE)) return whileStatement()
         if (match(LEFT_BRACE)) return blockStatement()
         return expressionStatement()
     }
@@ -218,6 +220,16 @@ class Parser(private val tokens: List<Token>) {
         val value: Expr = expression()
         consume(SEMICOLON, "Expect ';' after value.")
         return Print(value)
+    }
+
+    // whileStmt      → "while" "(" expression ")" statement ;
+    private fun whileStatement(): Stmt {
+        consume(LEFT_PAREN, "Expect '(' after 'while'.")
+        val condition: Expr = expression()
+        consume(RIGHT_PAREN, "Expect ')' after condition.")
+        val body: Stmt = statement()
+
+        return While(condition, body)
     }
 
     // varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;

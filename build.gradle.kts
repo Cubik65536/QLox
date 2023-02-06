@@ -62,6 +62,11 @@ tasks {
         archiveVersion.set(shadowJarVersion)
         archiveClassifier.set("")
     }
+
+    processResources {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        from(projectProps)
+    }
 }
 
 application {

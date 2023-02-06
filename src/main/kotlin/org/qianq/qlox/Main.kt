@@ -95,19 +95,22 @@ class QLox {
 
         @JvmStatic
         fun main(args: Array<String>) {
+            VersionUtil.loadVersionProperties()
             // Entry point
             when (args.size) {
                 // If no arguments were given when running the program, run the REPL
-                0 -> runPrompt()
-                // If one argument was given (the file path)
+                0 -> {
+                    println("QLox Interpreter ${VersionUtil.getVersion()}")
+                    runPrompt()
+                }
+                // If one argument was given (the file path or the version flag)
                 1 -> {
-                    if (args[0] == "-version") {
+                    if (args[0] == "-version") { // The version flag (-version)
                         // Print the version and exit
-                        VersionUtil.loadVersionProperties()
                         println("QLox Interpreter Version QLox-${VersionUtil.getProperty("version")}-"
                                 + "${VersionUtil.getProperty("stage")} (build ${VersionUtil.getProperty("revision")})")
                         exitProcess(0)
-                    } else {
+                    } else { // The file path
                         // Run the file
                         runFile(args[0])
                     }

@@ -75,6 +75,7 @@ class GenerateAst {
                 outputDir, "Stmt", listOf(
                     "Block      -> val statements: List<Stmt>",
                     "Expression -> val expression: Expr",
+                    "If         -> val condition: Expr, val thenBranch: Stmt, val elseBranch: Stmt?",
                     "Print      -> val expression: Expr",
                     "Var        -> val name: Token, val initializer: Expr?"
                 )

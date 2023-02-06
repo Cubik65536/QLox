@@ -159,6 +159,10 @@ class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
         evaluate(stmt.expression)
     }
 
+    override fun visitStmt(stmt: If) {
+        TODO("Not yet implemented")
+    }
+
     override fun visitStmt(stmt: Print) {
         val value = evaluate(stmt.expression)
         println(stringify(value))

@@ -3,7 +3,7 @@ package org.qianq.qlox
 import org.qianq.qlox.token.Token
 import org.qianq.qlox.token.TokenType.*
 
-class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
+class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     private var globals = Environment()
 
     private fun stringify(obj: Any?): String {
@@ -31,7 +31,7 @@ class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
         throw RuntimeError(operator, "Operands must be numbers.")
     }
 
-    private fun evaluate(expr: Expr): Any {
+    private fun evaluate(expr: Expr): Any? {
         return expr.accept(this)
     }
 
@@ -64,13 +64,13 @@ class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
         return a == b
     }
 
-    override fun visitExpr(expr: Assign): Any {
+    override fun visitExpr(expr: Assign): Any? {
         val value = evaluate(expr.value)
         globals.assign(expr.name, value)
         return value
     }
 
-    override fun visitExpr(expr: Binary): Any {
+    override fun visitExpr(expr: Binary): Any? {
         val left = evaluate(expr.left)
         val right = evaluate(expr.right)
 
@@ -121,17 +121,17 @@ class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
     }
 
     // Evaluating parentheses
-    override fun visitExpr(expr: Grouping): Any {
+    override fun visitExpr(expr: Grouping): Any? {
         return evaluate(expr.expression)
     }
 
     // Evaluating literals
-    override fun visitExpr(expr: Literal): Any {
-        return expr.value!!
+    override fun visitExpr(expr: Literal): Any? {
+        return expr.value
     }
 
     // Evaluating logical expressions
-    override fun visitExpr(expr: Logical): Any {
+    override fun visitExpr(expr: Logical): Any? {
         val left = evaluate(expr.left)
 
         if (expr.operator.type == OR) {

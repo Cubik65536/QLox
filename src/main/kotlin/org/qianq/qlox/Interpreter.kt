@@ -160,7 +160,11 @@ class Interpreter: Expr.Visitor<Any>, Stmt.Visitor<Unit> {
     }
 
     override fun visitStmt(stmt: If) {
-        TODO("Not yet implemented")
+        if (isTruthy(evaluate(stmt.condition))) {
+            execute(stmt.thenBranch)
+        } else if (stmt.elseBranch != null) {
+            execute(stmt.elseBranch)
+        }
     }
 
     override fun visitStmt(stmt: Print) {

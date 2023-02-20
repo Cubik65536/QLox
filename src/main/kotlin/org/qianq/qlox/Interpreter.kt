@@ -132,7 +132,7 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
             arguments.add(evaluate(argument))
         }
 
-        if (callee !is LoxCallable) {
+        if (callee !is Callable) {
             throw RuntimeError(expr.paren, "Can only call functions and classes.")
         }
 

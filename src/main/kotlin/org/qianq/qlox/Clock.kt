@@ -1,6 +1,6 @@
 package org.qianq.qlox
 
-class Clock: LoxCallable {
+class Clock: Callable {
     override val arity: Int
         get() = 0
 

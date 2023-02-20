@@ -15,11 +15,27 @@ fun max(a, b) {
   }
 }
 
+fun makeCounter() {
+  var i = 0;
+  fun count() {
+    i = i + 1;
+    print i;
+  }
+
+  return count;
+}
+
+var counter = makeCounter();
+counter(); // "1".
+counter(); // "2".
+
 count(3);
 add(1, 2, 3);
 print max(3, 6);
 
 /* Output:
+1
+2
 1
 2
 3

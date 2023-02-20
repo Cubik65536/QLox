@@ -10,6 +10,7 @@ abstract class Stmt {
         fun visitStmt(stmt: Function): R
         fun visitStmt(stmt: If): R
         fun visitStmt(stmt: Print): R
+        fun visitStmt(stmt: Return): R
         fun visitStmt(stmt: Var): R
         fun visitStmt(stmt: While): R
     }
@@ -40,6 +41,12 @@ class If(val condition: Expr, val thenBranch: Stmt, val elseBranch: Stmt?) : Stm
 }
 
 class Print(val expression: Expr) : Stmt() {
+    override fun <R> accept(visitor: Visitor<R>): R {
+        return visitor.visitStmt(this)
+    }
+}
+
+class Return(val keyword: Token, val value: Expr?) : Stmt() {
     override fun <R> accept(visitor: Visitor<R>): R {
         return visitor.visitStmt(this)
     }

@@ -80,6 +80,7 @@ class GenerateAst {
                     "Function   -> val name: Token, val params: List<Token>, val body: List<Stmt>",
                     "If         -> val condition: Expr, val thenBranch: Stmt, val elseBranch: Stmt?",
                     "Print      -> val expression: Expr",
+                    "Return     -> val keyword: Token, val value: Expr?",
                     "Var        -> val name: Token, val initializer: Expr?",
                     "While      -> val condition: Expr, val body: Stmt"
                 )

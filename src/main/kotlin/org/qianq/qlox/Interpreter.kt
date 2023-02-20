@@ -4,7 +4,12 @@ import org.qianq.qlox.token.Token
 import org.qianq.qlox.token.TokenType.*
 
 class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
-    private var scope = Environment()
+    val globals = Environment()
+    private var environment = globals
+
+    init {
+        globals.define("clock", Clock())
+    }
 
     private fun stringify(obj: Any?): String {
         return if (obj == null) {
@@ -40,14 +45,14 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     }
 
     private fun executeBlock(statements: List<Stmt>, environment: Environment) {
-        val previous = this.scope
+        val previous = this.environment
         try {
-            this.scope = environment
+            this.environment = environment
             for (statement in statements) {
                 execute(statement)
             }
         } finally {
-            this.scope = previous
+            this.environment = previous
         }
     }
 
@@ -66,7 +71,7 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
     override fun visitExpr(expr: Assign): Any? {
         val value = evaluate(expr.value)
-        scope.assign(expr.name, value)
+        environment.assign(expr.name, value)
         return value
     }
 
@@ -179,11 +184,11 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
     // Evaluating variables
     override fun visitExpr(expr: Variable): Any {
-        return scope.get(expr.name)!!
+        return environment.get(expr.name)!!
     }
 
     override fun visitStmt(stmt: Block) {
-        executeBlock(stmt.statements, Environment(scope))
+        executeBlock(stmt.statements, Environment(environment))
     }
 
     override fun visitStmt(stmt: Expression) {
@@ -209,7 +214,7 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         } else {
             null
         }
-        scope.define(stmt.name.lexeme, value)
+        environment.define(stmt.name.lexeme, value)
     }
 
     override fun visitStmt(stmt: While) {

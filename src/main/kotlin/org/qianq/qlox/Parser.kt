@@ -98,8 +98,7 @@ class Parser(private val tokens: List<Token>) {
         throw error(peek(), "Expect expression.")
     }
 
-    // unary → ( "!" | "-" ) unary
-    //       | primary ;
+    // unary → ( "!" | "-" ) unary | call ;
     private fun unary(): Expr {
         if (match(BANG, MINUS)) {
             val operator: Token = previous()
@@ -107,7 +106,40 @@ class Parser(private val tokens: List<Token>) {
             return Unary(operator, right)
         }
 
-        return primary()
+        return call()
+    }
+
+    // call → primary ( "(" arguments? ")" )* ;
+    private fun call(): Expr {
+        var expr: Expr = primary()
+
+        while (true) {
+            if (match(LEFT_PAREN)) {
+                expr = arguments(expr)
+            } else {
+                break
+            }
+        }
+
+        return expr
+    }
+
+    // arguments → expression ( "," expression )* ;
+    private fun arguments(callee: Expr): Expr {
+        val arguments: MutableList<Expr> = mutableListOf()
+
+        if (!check(RIGHT_PAREN)) {
+            do {
+                if (arguments.size >= 255) {
+                    error(peek(), "Can't have more than 255 arguments.")
+                }
+                arguments.add(expression())
+            } while (match(COMMA))
+        }
+
+        val paren = consume(RIGHT_PAREN, "Expect ')' after arguments.")
+
+        return Call(callee, paren, arguments)
     }
 
     // Binary Operators

@@ -44,7 +44,7 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         stmt.accept(this)
     }
 
-    private fun executeBlock(statements: List<Stmt>, environment: Environment) {
+    fun executeBlock(statements: List<Stmt>, environment: Environment) {
         val previous = this.environment
         try {
             this.environment = environment
@@ -193,6 +193,11 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
     override fun visitStmt(stmt: Expression) {
         evaluate(stmt.expression)
+    }
+
+    override fun visitStmt(stmt: Function) {
+        val function = Fn(stmt, environment)
+        environment.define(stmt.name.lexeme, function)
     }
 
     override fun visitStmt(stmt: If) {

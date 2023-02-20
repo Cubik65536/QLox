@@ -7,12 +7,22 @@ fun add(a, b, c) {
   print a + b + c;
 }
 
+fun max(a, b) {
+  if (a > b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+
 count(3);
 add(1, 2, 3);
+print max(3, 6);
 
 /* Output:
 1
 2
 3
+6
 6
 */

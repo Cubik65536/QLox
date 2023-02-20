@@ -213,6 +213,11 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         println(stringify(value))
     }
 
+    override fun visitStmt(stmt: Return) {
+        val value = if (stmt.value != null) evaluate(stmt.value) else null
+        throw ReturnValue(value)
+    }
+
     override fun visitStmt(stmt: Var) {
         val value = if (stmt.initializer != null) {
             evaluate(stmt.initializer)

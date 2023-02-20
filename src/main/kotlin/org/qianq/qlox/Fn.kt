@@ -11,7 +11,11 @@ class Fn (
         for (i in declaration.params.indices) {
             environment.define(declaration.params[i].lexeme, arguments[i])
         }
-        interpreter.executeBlock(declaration.body, environment)
+        try {
+            interpreter.executeBlock(declaration.body, environment)
+        } catch (returnValue: ReturnValue) {
+            return returnValue.value
+        }
         return null
     }
 

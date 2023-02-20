@@ -119,6 +119,18 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         }
     }
 
+    override fun visitExpr(expr: Call): Any? {
+        val callee = evaluate(expr.callee)
+
+        val arguments = mutableListOf<Any?>()
+        for (argument in expr.arguments) {
+            arguments.add(evaluate(argument))
+        }
+
+        val function = callee as LoxCallable
+        return function.call(this, arguments)
+    }
+
     // Evaluating parentheses
     override fun visitExpr(expr: Grouping): Any? {
         return evaluate(expr.expression)

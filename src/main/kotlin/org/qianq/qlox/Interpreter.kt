@@ -127,8 +127,11 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
             arguments.add(evaluate(argument))
         }
 
-        val function = callee as LoxCallable
-        return function.call(this, arguments)
+        if (callee !is LoxCallable) {
+            throw RuntimeError(expr.paren, "Can only call functions and classes.")
+        }
+
+        return callee.call(this, arguments)
     }
 
     // Evaluating parentheses

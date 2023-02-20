@@ -1,0 +1,18 @@
+fun count(n) {
+  if (n > 1) count(n - 1);
+  print n;
+}
+
+fun add(a, b, c) {
+  print a + b + c;
+}
+
+count(3);
+add(1, 2, 3);
+
+/* Output:
+1
+2
+3
+6
+*/

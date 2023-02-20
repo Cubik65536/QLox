@@ -203,11 +203,14 @@ class Parser(private val tokens: List<Token>) {
 
     // Statement parsers
 
-    // declaration → varDecl
+    // declaration → funDecl
+    //             | varDecl
     //             | statement ;
     private fun declaration(): Stmt {
         return try {
-            if (match(VAR)) {
+            if (match(FUN)) {
+                function("function");
+            } else if (match(VAR)) {
                 varDeclaration()
             } else {
                 statement()
@@ -229,7 +232,7 @@ class Parser(private val tokens: List<Token>) {
         if (match(IF)) return ifStatement()
         if (match(PRINT)) return printStatement()
         if (match(WHILE)) return whileStatement()
-        if (match(LEFT_BRACE)) return blockStatement()
+        if (match(LEFT_BRACE)) return Block(blockStatement())
         return expressionStatement()
     }
 
@@ -330,14 +333,39 @@ class Parser(private val tokens: List<Token>) {
         return Expression(expr)
     }
 
+    // funDecl        → "fun" function ;
+    // function       → IDENTIFIER "(" parameters? ")" block ;
+    private fun function(kind: String): Function {
+        val name = consume(IDENTIFIER, "Expect $kind name.")
+
+        consume(LEFT_PAREN, "Expect '(' after $kind name.")
+
+        val parameters: MutableList<Token> = mutableListOf()
+
+        if (!check(RIGHT_PAREN)) {
+            do {
+                if (parameters.size >= 255) {
+                    error(peek(), "Cannot have more than 255 parameters.")
+                }
+                parameters.add(consume(IDENTIFIER, "Expect parameter name."))
+            } while (match(COMMA))
+        }
+
+        consume(RIGHT_PAREN, "Expect ')' after parameters.")
+
+        consume(LEFT_BRACE, "Expect '{' before $kind body.")
+        val body = blockStatement()
+        return Function(name, parameters, body)
+    }
+
     // block          → "{" declaration* "}" ;
-    private fun blockStatement(): Stmt {
+    private fun blockStatement(): List<Stmt> {
         val statements: MutableList<Stmt> = mutableListOf()
         while (!check(RIGHT_BRACE) && !isAtEnd()) {
             statements.add(declaration())
         }
         consume(RIGHT_BRACE, "Expect '}' after block.")
-        return Block(statements)
+        return statements
     }
 
     // assignment     → IDENTIFIER "=" assignment

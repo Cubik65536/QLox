@@ -212,6 +212,10 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         executeBlock(stmt.statements, Environment(environment))
     }
 
+    override fun visitStmt(stmt: Class) {
+        TODO("Not yet implemented")
+    }
+
     override fun visitStmt(stmt: Expression) {
         evaluate(stmt.expression)
     }

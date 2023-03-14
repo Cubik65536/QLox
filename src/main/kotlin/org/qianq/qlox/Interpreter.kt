@@ -6,6 +6,7 @@ import org.qianq.qlox.token.TokenType.*
 class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     val globals = Environment()
     private var environment = globals
+    private val locals = HashMap<Expr, Int>()
 
     init {
         globals.define("clock", Clock())
@@ -54,6 +55,10 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         } finally {
             this.environment = previous
         }
+    }
+
+    fun resolve(expr: Expr, depth: Int) {
+        locals[expr] = depth
     }
 
     // `false` and `nil` are `false`, everything else is `true`

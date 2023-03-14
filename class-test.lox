@@ -1,5 +1,9 @@
 class Person {
+    sayHello() {
+        print "Hello, World!";
+    }
 }
+
 
 var jane = Person();
 jane.name = "Jane";
@@ -8,3 +12,5 @@ print jane; // Person Instance
 var bill = Person();
 bill.name = "Bill";
 print bill.name; // Bill
+
+Person().sayHello(); // Hello, World!

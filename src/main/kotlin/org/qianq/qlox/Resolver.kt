@@ -4,7 +4,7 @@ import org.qianq.qlox.token.Token
 import java.util.*
 
 private enum class FunctionType {
-    NONE, FUNCTION
+    NONE, FUNCTION, METHOD
 }
 
 class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor<Void?> {
@@ -81,6 +81,11 @@ class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor
     override fun visitStmt(stmt: Class): Void? {
         declare(stmt.name)
         define(stmt.name)
+
+        for (method in stmt.methods) {
+            resolveFunction(method, FunctionType.METHOD)
+        }
+
         return null
     }
 

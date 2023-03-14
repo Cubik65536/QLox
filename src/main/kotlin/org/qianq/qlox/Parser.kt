@@ -332,6 +332,7 @@ class Parser(private val tokens: List<Token>) {
     // classDecl      → "class" IDENTIFIER ( "<" IDENTIFIER )?
     private fun classDeclaration(): Stmt {
         val name: Token = consume(IDENTIFIER, "Expect class name.")
+        consume(LEFT_BRACE, "Expect '{' before class body.")
 
         val methods: MutableList<Function> = mutableListOf()
         while (!check(RIGHT_BRACE) && !isAtEnd()) {

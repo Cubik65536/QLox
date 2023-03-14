@@ -15,8 +15,24 @@ class Environment {
         this.enclosing = enclosing
     }
 
+    val ancestor: (Int) -> Environment = { distance ->
+        var environment: Environment = this
+        for (i in 0 until distance) {
+            environment = environment.enclosing!!
+        }
+        environment
+    }
+
     fun define(name: String, value: Any?) {
         values[name] = value
+    }
+
+    fun getAt(distance: Int, name: String): Any? {
+        return ancestor(distance).values[name]
+    }
+
+    fun assignAt(distance: Int, name: Token, value: Any?) {
+        ancestor(distance).values[name.lexeme] = value
     }
 
     fun get(name: Token): Any? {

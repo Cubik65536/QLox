@@ -66,6 +66,10 @@ class QLox {
             // Stop if there was a syntax error
             if (hadError) return
 
+            // Interpreting Resolved Variables
+            val resolver = Resolver(interpreter)
+            resolver.resolve(statements)
+
             // Run the interpreter
             interpreter.interpret(statements)
         }

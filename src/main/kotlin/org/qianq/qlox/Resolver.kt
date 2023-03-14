@@ -7,9 +7,14 @@ private enum class FunctionType {
     NONE, FUNCTION, METHOD
 }
 
+private enum class ClassType {
+    NONE, CLASS
+}
+
 class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor<Void?> {
     private val scopes = Stack<MutableMap<String, Boolean>>()
     private var currentFunction = FunctionType.NONE
+    private var currentClass = ClassType.NONE
 
     private fun beginScope() {
         scopes.push(HashMap())
@@ -79,13 +84,22 @@ class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor
     }
 
     override fun visitStmt(stmt: Class): Void? {
+        val enclosingClass = currentClass
+        currentClass = ClassType.CLASS
+
         declare(stmt.name)
         define(stmt.name)
+
+        beginScope()
+        scopes.peek()["this"] = true
 
         for (method in stmt.methods) {
             resolveFunction(method, FunctionType.METHOD)
         }
 
+        endScope()
+
+        currentClass = enclosingClass
         return null
     }
 
@@ -189,6 +203,15 @@ class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor
     override fun visitExpr(expr: Set): Void? {
         resolve(expr.value)
         resolve(expr.obj)
+        return null
+    }
+
+    override fun visitExpr(expr: This): Void? {
+        if (currentClass == ClassType.NONE) {
+            QLox.error(expr.keyword, "Cannot use 'this' outside of a class.")
+            return null
+        }
+        resolveLocal(expr, expr.keyword)
         return null
     }
 

@@ -2,6 +2,9 @@ class Person {
     sayHello() {
         print "Hello, World!";
     }
+    sayName() {
+        return this.name;
+    }
 }
 
 
@@ -14,3 +17,4 @@ bill.name = "Bill";
 print bill.name; // Bill
 
 Person().sayHello(); // Hello, World!
+print bill.sayName(); // Bill

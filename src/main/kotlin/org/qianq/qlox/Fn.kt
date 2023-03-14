@@ -6,6 +6,12 @@ class Fn (
 ): Callable {
     override val arity: Int = declaration.params.size
 
+    fun bind(instance: LoxInstance): Fn {
+        val environment = Environment(closure)
+        environment.define("this", instance)
+        return Fn(declaration, environment)
+    }
+
     override fun call(interpreter: Interpreter, arguments: List<Any?>): Any? {
         val environment = Environment(closure)
         for (i in declaration.params.indices) {

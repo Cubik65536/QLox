@@ -199,6 +199,10 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         return value
     }
 
+    override fun visitExpr(expr: This): Any? {
+        return lookUpVariable(expr.keyword, expr)
+    }
+
     // Evaluating unary expressions
     override fun visitExpr(expr: Unary): Any {
         val right = evaluate(expr.right)

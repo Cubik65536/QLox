@@ -214,7 +214,7 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
     override fun visitStmt(stmt: Class) {
         environment.define(stmt.name.lexeme, null)
-        val clazz = LoxClass(stmt.name.lexeme)
+        val clazz = LoxClass(stmt.name.lexeme, 0)
         environment.assign(stmt.name, clazz)
     }
 

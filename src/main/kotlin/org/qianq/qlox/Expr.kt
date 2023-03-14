@@ -8,9 +8,11 @@ abstract class Expr {
         fun visitExpr(expr: Assign): R
         fun visitExpr(expr: Binary): R
         fun visitExpr(expr: Call): R
+        fun visitExpr(expr: Get): R
         fun visitExpr(expr: Grouping): R
         fun visitExpr(expr: Literal): R
         fun visitExpr(expr: Logical): R
+        fun visitExpr(expr: Set): R
         fun visitExpr(expr: Unary): R
         fun visitExpr(expr: Variable): R
     }
@@ -34,6 +36,12 @@ class Call(val callee: Expr, val paren: Token, val arguments: List<Expr>) : Expr
     }
 }
 
+class Get(val obj: Expr, val name: Token) : Expr() {
+    override fun <R> accept(visitor: Visitor<R>): R {
+        return visitor.visitExpr(this)
+    }
+}
+
 class Grouping(val expression: Expr) : Expr() {
     override fun <R> accept(visitor: Visitor<R>): R {
         return visitor.visitExpr(this)
@@ -47,6 +55,12 @@ class Literal(val value: Any?) : Expr() {
 }
 
 class Logical(val left: Expr, val operator: Token, val right: Expr) : Expr() {
+    override fun <R> accept(visitor: Visitor<R>): R {
+        return visitor.visitExpr(this)
+    }
+}
+
+class Set(val obj: Expr, val name: Token, val value: Expr) : Expr() {
     override fun <R> accept(visitor: Visitor<R>): R {
         return visitor.visitExpr(this)
     }

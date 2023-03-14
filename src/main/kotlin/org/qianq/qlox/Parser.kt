@@ -109,13 +109,16 @@ class Parser(private val tokens: List<Token>) {
         return call()
     }
 
-    // call → primary ( "(" arguments? ")" )* ;
+    // call → primary ( "(" arguments? ")" | "." IDENTIFIER )* ;
     private fun call(): Expr {
         var expr: Expr = primary()
 
         while (true) {
             if (match(LEFT_PAREN)) {
                 expr = arguments(expr)
+            } else if (match(DOT)) {
+                val name: Token = consume(IDENTIFIER, "Expect property name after '.'.")
+                expr = Get(expr, name)
             } else {
                 break
             }
@@ -399,8 +402,8 @@ class Parser(private val tokens: List<Token>) {
         return statements
     }
 
-    // assignment     → IDENTIFIER "=" assignment
-    //                | logic_or ;
+    // assignment → ( call "." )? IDENTIFIER "=" assignment
+    //            | logic_or ;
     private fun assignment(): Expr {
         val expr: Expr = or()
 
@@ -411,6 +414,8 @@ class Parser(private val tokens: List<Token>) {
             if (expr is Variable) {
                 val name: Token = expr.name
                 return Assign(name, value)
+            } else if (expr is Get) {
+                return Set(expr.obj, expr.name, value)
             }
 
             error(equals, "Invalid assignment target.")

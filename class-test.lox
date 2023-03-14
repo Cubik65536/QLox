@@ -1,3 +1,10 @@
-class Bagel {}
-var bagel = Bagel();
-print bagel; // Prints "Bagel instance".
+class Person {
+}
+
+var jane = Person();
+jane.name = "Jane";
+print jane; // Person Instance
+
+var bill = Person();
+bill.name = "Bill";
+print bill.name; // Bill

@@ -155,6 +155,15 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         return callee.call(this, arguments)
     }
 
+    override fun visitExpr(expr: Get): Any? {
+        val obj = evaluate(expr.obj)
+        if (obj is LoxInstance) {
+            return obj.get(expr.name)
+        }
+
+        throw RuntimeError(expr.name, "Only instances have properties.")
+    }
+
     // Evaluating parentheses
     override fun visitExpr(expr: Grouping): Any? {
         return evaluate(expr.expression)
@@ -176,6 +185,18 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         }
 
         return evaluate(expr.right)
+    }
+
+    override fun visitExpr(expr: Set): Any? {
+        val obj = evaluate(expr.obj)
+
+        if (obj !is LoxInstance) {
+            throw RuntimeError(expr.name, "Only instances have fields.")
+        }
+
+        val value = evaluate(expr.value)
+        obj.set(expr.name, value)
+        return value
     }
 
     // Evaluating unary expressions

@@ -70,6 +70,9 @@ class QLox {
             val resolver = Resolver(interpreter)
             resolver.resolve(statements)
 
+            // Stop if there was a resolution error
+            if (hadError) return
+
             // Run the interpreter
             interpreter.interpret(statements)
         }

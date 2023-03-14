@@ -3,8 +3,13 @@ package org.qianq.qlox
 import org.qianq.qlox.token.Token
 import java.util.*
 
+private enum class FunctionType {
+    NONE, FUNCTION
+}
+
 class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor<Void?> {
     private val scopes = Stack<MutableMap<String, Boolean>>()
+    private var currentFunction = FunctionType.NONE
 
     private fun beginScope() {
         scopes.push(HashMap())
@@ -32,6 +37,9 @@ class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor
         if (scopes.isEmpty()) return
 
         val scope = scopes.peek()
+        if (scope.containsKey(name.lexeme)) {
+            QLox.error(name, "Variable with this name already declared in this scope.")
+        }
 
         scope[name.lexeme] = false
     }
@@ -50,7 +58,9 @@ class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor
         }
     }
 
-    private fun resolveFunction(function: Function) {
+    private fun resolveFunction(function: Function, type: FunctionType) {
+        val enclosingFunction = currentFunction
+        currentFunction = type
         beginScope()
         for (param in function.params) {
             declare(param)
@@ -58,6 +68,7 @@ class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor
         }
         resolve(function.body)
         endScope()
+        currentFunction = enclosingFunction
     }
 
     override fun visitStmt(stmt: Block): Void? {
@@ -93,7 +104,7 @@ class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor
     override fun visitStmt(stmt: Function): Void? {
         declare(stmt.name)
         define(stmt.name)
-        resolveFunction(stmt)
+        resolveFunction(stmt, FunctionType.FUNCTION)
         return null
     }
 
@@ -115,6 +126,9 @@ class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor
     }
 
     override fun visitStmt(stmt: Return): Void? {
+        if (currentFunction == FunctionType.NONE) {
+            QLox.error(stmt.keyword, "Cannot return from top-level code.")
+        }
         if (stmt.value != null) {
             resolve(stmt.value)
         }

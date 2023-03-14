@@ -203,13 +203,16 @@ class Parser(private val tokens: List<Token>) {
 
     // Statement parsers
 
-    // declaration → funDecl
+    // declaration → classDecl
+    //             | funDecl
     //             | varDecl
     //             | statement ;
     private fun declaration(): Stmt {
         return try {
-            if (match(FUN)) {
-                function("function");
+            if (match(CLASS)) {
+                classDeclaration()
+            } else if (match(FUN)) {
+                function("function")
             } else if (match(VAR)) {
                 varDeclaration()
             } else {
@@ -324,6 +327,20 @@ class Parser(private val tokens: List<Token>) {
         val body: Stmt = statement()
 
         return While(condition, body)
+    }
+
+    // classDecl      → "class" IDENTIFIER ( "<" IDENTIFIER )?
+    private fun classDeclaration(): Stmt {
+        val name: Token = consume(IDENTIFIER, "Expect class name.")
+
+        val methods: MutableList<Function> = mutableListOf()
+        while (!check(RIGHT_BRACE) && !isAtEnd()) {
+            methods.add(function("method"))
+        }
+
+        consume(RIGHT_BRACE, "Expect '}' after class body.")
+
+        return Class(name, methods)
     }
 
     // varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;

@@ -79,7 +79,9 @@ class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor
     }
 
     override fun visitStmt(stmt: Class): Void? {
-        TODO("Not yet implemented")
+        declare(stmt.name)
+        define(stmt.name)
+        return null
     }
 
     override fun visitStmt(stmt: Var): Void? {

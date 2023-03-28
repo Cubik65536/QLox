@@ -242,7 +242,7 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
         val methods = mutableMapOf<String, Fn>()
         for (method in stmt.methods) {
-            val function = Fn(method, environment)
+            val function = Fn(method, environment, method.name.lexeme == "init")
             methods[method.name.lexeme] = function
         }
 
@@ -255,7 +255,7 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     }
 
     override fun visitStmt(stmt: Function) {
-        val function = Fn(stmt, environment)
+        val function = Fn(stmt, environment, false)
         environment.define(stmt.name.lexeme, function)
     }
 

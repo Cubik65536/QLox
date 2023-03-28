@@ -4,7 +4,7 @@ import org.qianq.qlox.token.Token
 import java.util.*
 
 private enum class FunctionType {
-    NONE, FUNCTION, METHOD
+    NONE, FUNCTION, INITIALIZER, METHOD
 }
 
 private enum class ClassType {
@@ -94,7 +94,9 @@ class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor
         scopes.peek()["this"] = true
 
         for (method in stmt.methods) {
-            resolveFunction(method, FunctionType.METHOD)
+            resolveFunction(method,
+                if (method.name.lexeme == "init") FunctionType.INITIALIZER else FunctionType.METHOD
+            )
         }
 
         endScope()
@@ -155,6 +157,9 @@ class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor
             QLox.error(stmt.keyword, "Cannot return from top-level code.")
         }
         if (stmt.value != null) {
+            if (currentFunction == FunctionType.INITIALIZER) {
+                QLox.error(stmt.keyword, "Cannot return a value from an initializer.")
+            }
             resolve(stmt.value)
         }
         return null

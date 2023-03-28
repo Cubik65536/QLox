@@ -4,7 +4,9 @@ class Fn (
     private val declaration: Function,
     private val closure: Environment,
 ): Callable {
-    override val arity: Int = declaration.params.size
+    override fun arity(): Int {
+        return declaration.params.size
+    }
 
     fun bind(instance: LoxInstance): Fn {
         val environment = Environment(closure)

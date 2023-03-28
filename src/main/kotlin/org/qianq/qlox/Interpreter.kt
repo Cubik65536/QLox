@@ -148,8 +148,8 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
             throw RuntimeError(expr.paren, "Can only call functions and classes.")
         }
 
-        if (arguments.size != callee.arity) {
-            throw RuntimeError(expr.paren, "Expected ${callee.arity} arguments but got ${arguments.size}.")
+        if (arguments.size != callee.arity()) {
+            throw RuntimeError(expr.paren, "Expected ${callee.arity()} arguments but got ${arguments.size}.")
         }
 
         return callee.call(this, arguments)
@@ -246,7 +246,7 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
             methods[method.name.lexeme] = function
         }
 
-        val clazz = LoxClass(stmt.name.lexeme, methods, 0)
+        val clazz = LoxClass(stmt.name.lexeme, methods)
         environment.assign(stmt.name, clazz)
     }
 

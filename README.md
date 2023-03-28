@@ -28,4 +28,9 @@ A [Lox](http://www.craftinginterpreters.com/the-lox-language.html) interpreter w
 
 ### Build from source
 
-***TODO***
+1. Clone the repository
+2. Open the project in IntelliJ IDEA
+3. Wait for Gradle to configure the project
+4. Run the Gradle `shadowJar` task (under `Tasks > shadow`)
+5. Find the built JAR in `build/distributions`
+6. Follow the steps from the previous section to run the JAR

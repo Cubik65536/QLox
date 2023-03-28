@@ -267,9 +267,9 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
             environment.define("super", superclass)
         }
 
-        val methods = mutableMapOf<String, Fn>()
+        val methods = mutableMapOf<String, LoxFunction>()
         for (method in stmt.methods) {
-            val function = Fn(method, environment, method.name.lexeme == "init")
+            val function = LoxFunction(method, environment, method.name.lexeme == "init")
             methods[method.name.lexeme] = function
         }
 
@@ -287,7 +287,7 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     }
 
     override fun visitStmt(stmt: Function) {
-        val function = Fn(stmt, environment, false)
+        val function = LoxFunction(stmt, environment, false)
         environment.define(stmt.name.lexeme, function)
     }
 

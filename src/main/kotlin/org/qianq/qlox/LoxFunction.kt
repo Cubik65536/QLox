@@ -1,6 +1,6 @@
 package org.qianq.qlox
 
-class Fn (
+class LoxFunction (
     private val declaration: Function,
     private val closure: Environment,
     private val isInitializer: Boolean
@@ -9,10 +9,10 @@ class Fn (
         return declaration.params.size
     }
 
-    fun bind(instance: LoxInstance): Fn {
+    fun bind(instance: LoxInstance): LoxFunction {
         val environment = Environment(closure)
         environment.define("this", instance)
-        return Fn(declaration, environment, isInitializer)
+        return LoxFunction(declaration, environment, isInitializer)
     }
 
     override fun call(interpreter: Interpreter, arguments: List<Any?>): Any? {

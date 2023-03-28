@@ -90,6 +90,14 @@ class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor
         declare(stmt.name)
         define(stmt.name)
 
+        if (stmt.superclass != null && stmt.name.lexeme == stmt.superclass.name.lexeme) {
+            QLox.error(stmt.superclass.name, "A class cannot inherit from itself.")
+        }
+
+        if (stmt.superclass != null) {
+            resolve(stmt.superclass)
+        }
+
         beginScope()
         scopes.peek()["this"] = true
 

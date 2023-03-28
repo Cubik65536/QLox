@@ -79,7 +79,7 @@ class GenerateAst {
             defineAst(
                 outputDir, "Stmt", listOf(
                     "Block      -> val statements: List<Stmt>",
-                    "Class      -> val name: Token, val methods: List<Function>",
+                    "Class      -> val name: Token, val superclass: Variable?, val methods: List<Function>",
                     "Expression -> val expression: Expr",
                     "Function   -> val name: Token, val params: List<Token>, val body: List<Stmt>",
                     "If         -> val condition: Expr, val thenBranch: Stmt, val elseBranch: Stmt?",

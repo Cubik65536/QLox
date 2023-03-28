@@ -1,6 +1,6 @@
 package org.qianq.qlox
 
-class LoxClass(val name: String, val methods: Map<String, Fn>): Callable {
+class LoxClass(val name: String, val superclass: LoxClass?, val methods: Map<String, Fn>): Callable {
     override fun arity(): Int {
         val initializer = findMethod("init") ?: return 0
         return initializer.arity()

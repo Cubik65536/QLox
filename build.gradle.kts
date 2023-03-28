@@ -57,7 +57,7 @@ tasks {
         if (getStage() == "dev" || getStage() == "alpha" || getStage() == "beta" || getStage() == "rc") {
             shadowJarVersion = shadowJarVersion + "-" + getStage()
         }
-        shadowJarVersion = shadowJarVersion + "+" + getRevision()
+        shadowJarVersion = shadowJarVersion + "-" + getRevision()
         destinationDirectory.set(file("${projectDir}/build/distributions"))
         archiveVersion.set(shadowJarVersion)
         archiveClassifier.set("")

@@ -2,3 +2,13 @@
 // class Subclass < NotAClass {} // Error: Superclass must be a class.
 
 // class Subclass < Subclass {} // Error: A class cannot inherit from itself.
+
+class Doughnut {
+  cook() {
+    print "Fry until golden brown.";
+  }
+}
+
+class BostonCream < Doughnut {}
+
+BostonCream().cook(); // Fry until golden brown.

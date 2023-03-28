@@ -10,6 +10,11 @@ class LoxClass(val name: String, val superclass: LoxClass?, val methods: Map<Str
         if (methods.containsKey(name)) {
             return methods[name] as Fn
         }
+
+        if (superclass != null) {
+            return superclass.findMethod(name)
+        }
+
         return null
     }
 

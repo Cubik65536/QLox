@@ -1,0 +1,4 @@
+// var NotAClass = "I am totally not a class";
+// class Subclass < NotAClass {} // Error: Superclass must be a class.
+
+// class Subclass < Subclass {} // Error: A class cannot inherit from itself.

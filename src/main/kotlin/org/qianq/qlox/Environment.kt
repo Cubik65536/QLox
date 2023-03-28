@@ -3,7 +3,7 @@ package org.qianq.qlox
 import org.qianq.qlox.token.Token
 
 class Environment {
-    private val enclosing: Environment?
+    val enclosing: Environment?
 
     private val values: MutableMap<String, Any?> = mutableMapOf()
 

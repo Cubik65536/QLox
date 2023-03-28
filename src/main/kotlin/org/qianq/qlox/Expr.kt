@@ -13,6 +13,7 @@ abstract class Expr {
         fun visitExpr(expr: Literal): R
         fun visitExpr(expr: Logical): R
         fun visitExpr(expr: Set): R
+        fun visitExpr(expr: Super): R
         fun visitExpr(expr: This): R
         fun visitExpr(expr: Unary): R
         fun visitExpr(expr: Variable): R
@@ -62,6 +63,12 @@ class Logical(val left: Expr, val operator: Token, val right: Expr) : Expr() {
 }
 
 class Set(val obj: Expr, val name: Token, val value: Expr) : Expr() {
+    override fun <R> accept(visitor: Visitor<R>): R {
+        return visitor.visitExpr(this)
+    }
+}
+
+class Super(val keyword: Token, val method: Token) : Expr() {
     override fun <R> accept(visitor: Visitor<R>): R {
         return visitor.visitExpr(this)
     }

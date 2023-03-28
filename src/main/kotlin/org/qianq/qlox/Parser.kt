@@ -73,9 +73,9 @@ class Parser(private val tokens: List<Token>) {
 
     // Unary Operators
 
-    // primary → NUMBER | STRING | "true" | "false" | "nil"
-    //        | "(" expression ")"
-    //        | IDENTIFIER ;
+    // primary → "true" | "false" | "nil" | "this"
+    //           | NUMBER | STRING | IDENTIFIER | "(" expression ")"
+    //           | "super" "." IDENTIFIER ;
     private fun primary(): Expr {
         if (match(FALSE)) return Literal(false)
         if (match(TRUE)) return Literal(true)
@@ -83,6 +83,13 @@ class Parser(private val tokens: List<Token>) {
 
         if (match(NUMBER, STRING)) {
             return Literal(previous().literal)
+        }
+
+        if (match(SUPER)) {
+            val keyword: Token = previous()
+            consume(DOT, "Expect '.' after 'super'.")
+            val method: Token = consume(IDENTIFIER, "Expect superclass method name.")
+            return Super(keyword, method)
         }
 
         if (match(THIS)) {

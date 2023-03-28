@@ -199,6 +199,18 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         return value
     }
 
+    override fun visitExpr(expr: Super): Any? {
+        val distance = locals[expr]!!
+        val superclass = environment.getAt(distance, "super") as LoxClass
+
+        val obj = environment.getAt(distance - 1, "this") as LoxInstance
+
+        val method = superclass.findMethod(expr.method.lexeme) ?:
+                throw RuntimeError(expr.method, "Undefined property '${expr.method.lexeme}'.")
+
+        return method.bind(obj)
+    }
+
     override fun visitExpr(expr: This): Any? {
         return lookUpVariable(expr.keyword, expr)
     }
@@ -250,6 +262,11 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
         environment.define(stmt.name.lexeme, null)
 
+        if (stmt.superclass != null) {
+            environment = Environment(environment)
+            environment.define("super", superclass)
+        }
+
         val methods = mutableMapOf<String, Fn>()
         for (method in stmt.methods) {
             val function = Fn(method, environment, method.name.lexeme == "init")
@@ -257,6 +274,11 @@ class Interpreter: Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         }
 
         val clazz = LoxClass(stmt.name.lexeme, superclass, methods)
+
+        if (superclass != null) {
+            environment = environment.enclosing!!
+        }
+
         environment.assign(stmt.name, clazz)
     }
 

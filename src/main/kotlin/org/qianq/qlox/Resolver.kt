@@ -8,7 +8,7 @@ private enum class FunctionType {
 }
 
 private enum class ClassType {
-    NONE, CLASS
+    NONE, CLASS, SUBCLASS
 }
 
 class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor<Void?> {
@@ -95,7 +95,13 @@ class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor
         }
 
         if (stmt.superclass != null) {
+            currentClass = ClassType.SUBCLASS
             resolve(stmt.superclass)
+        }
+
+        if (stmt.superclass != null) {
+            beginScope()
+            scopes.peek()["super"] = true
         }
 
         beginScope()
@@ -108,6 +114,10 @@ class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor
         }
 
         endScope()
+
+        if (stmt.superclass != null) {
+            endScope()
+        }
 
         currentClass = enclosingClass
         return null
@@ -216,6 +226,16 @@ class Resolver (val interpreter: Interpreter): Expr.Visitor<Void?>, Stmt.Visitor
     override fun visitExpr(expr: Set): Void? {
         resolve(expr.value)
         resolve(expr.obj)
+        return null
+    }
+
+    override fun visitExpr(expr: Super): Void? {
+        if (currentClass == ClassType.NONE) {
+            QLox.error(expr.keyword, "Cannot use 'super' outside of a class.")
+        } else if (currentClass != ClassType.SUBCLASS) {
+            QLox.error(expr.keyword, "Cannot use 'super' in a class with no superclass.")
+        }
+        resolveLocal(expr, expr.keyword)
         return null
     }
 

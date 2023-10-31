@@ -4,7 +4,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"
       # Check for GitHub Actions updates at 00:00 UTC
       time: "00:00"
     # Add assignees
